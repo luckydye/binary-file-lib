@@ -1,0 +1,24 @@
+{
+  "name": "binary-file-lib",
+  "version": "1.0.0",
+  "description": "Read and write in different file formats.",
+  "main": "index.mjs",
+  "module": "binary-file-lib",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luckydye/binary-file-lib.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/luckydye/binary-file-lib/issues"
+  },
+  "homepage": "https://github.com/luckydye/binary-file-lib#readme",
+  "dependencies": {
+    "gl-matrix": "^3.2.1"
+  }
+}
