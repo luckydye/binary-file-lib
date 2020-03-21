@@ -5,7 +5,7 @@
   "main": "index.mjs",
   "module": "binary-file-lib",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/validate.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/luckydye/binary-file-lib#readme",
   "dependencies": {
-    "gl-matrix": "^3.2.1"
+    "gl-matrix": "^3.2.1",
+    "gltf-validator": "^2.0.0-dev.3.2"
   }
 }
