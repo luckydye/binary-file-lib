@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+let fs, path;
 
 export class TextFile {
 
@@ -8,7 +7,11 @@ export class TextFile {
         this.writeStream = null;
     }
 
-    openWriteStream(filename) {
+    async openWriteStream(filename) {
+
+        fs = fs || await import('fs');
+        path = path || await import('path');
+
         const filepath = path.resolve(filename);
         this.writeStream = fs.createWriteStream(filepath);
         this.writeStream.on('error', function (err) {
