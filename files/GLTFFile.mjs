@@ -141,10 +141,19 @@ export default class GLTFFile extends TextFile {
     }
 
     createBuffer(bufferArray) {
-        const buffer = Buffer.from(bufferArray.buffer);
+        let buffer = "";
+
+        if(Buffer) {
+            // nodejs
+            buffer = Buffer.from(bufferArray.buffer).toString('base64');
+        } else {
+            // chrome
+            buffer = btoa(String.fromCharCode(...new Uint8Array(bufferArray.buffer)));
+        }
+
         const gltfBuffer = {
             byteLength: bufferArray.buffer.byteLength,
-            uri: "data:application/octet-stream;base64," + buffer.toString('base64')
+            uri: "data:application/octet-stream;base64," + buffer
         }
         return this.asset.buffers.push(gltfBuffer) - 1;
     }

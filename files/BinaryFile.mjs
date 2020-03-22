@@ -137,7 +137,7 @@ export class BinaryFile {
             throw new Error('Buffer too small to unserialize');
         }
 
-        const isDataView = binary instanceof Buffer || binary instanceof DataView;
+        const isDataView = binary instanceof DataView || binary instanceof Buffer;
 
         if(!isDataView) {
             throw new Error('to unserialize, provide a DataView object');
@@ -292,7 +292,7 @@ export class BinaryFile {
             return file;
         }
         
-        if(dataArray instanceof Buffer || dataArray instanceof DataView) {
+        if(dataArray instanceof DataView || dataArray instanceof Buffer) {
             const file = new this();
             file.buffer = dataArray.buffer;
             file.view = new DataView(file.buffer, dataArray.byteOffset, dataArray.byteLength);
