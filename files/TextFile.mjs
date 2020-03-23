@@ -9,8 +9,8 @@ export class TextFile {
 
     async openWriteStream(filename) {
 
-        fs = fs || await import('fs');
-        path = path || await import('path');
+        fs = fs || await import(/* webpackIgnore: true */ 'fs');
+        path = path || await import(/* webpackIgnore: true */ 'path');
 
         const filepath = path.resolve(filename);
         this.writeStream = fs.createWriteStream(filepath);
