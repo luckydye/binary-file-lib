@@ -95,8 +95,14 @@ export default class GLTFFile extends TextFile {
         // read gltf file and create instance
     }
 
+    get loaded() {
+        return this.loadedBufferCount == this.asset.buffers.length;
+    }
+
     constructor() {
         super();
+
+        this.loadedBufferCount = 0;
         
         this.asset = {
             asset: {
@@ -140,21 +146,40 @@ export default class GLTFFile extends TextFile {
         return this.asset.nodes[0];
     }
 
-    createBuffer(bufferArray) {
-        let buffer = "";
-
-        if(Buffer) {
-            // nodejs
-            buffer = Buffer.from(bufferArray.buffer).toString('base64');
-        } else {
-            // chrome
-            buffer = btoa(String.fromCharCode(...new Uint8Array(bufferArray.buffer)));
-        }
+    async createBuffer(bufferArray) {
 
         const gltfBuffer = {
             byteLength: bufferArray.buffer.byteLength,
-            uri: "data:application/octet-stream;base64," + buffer
+            uri: "data:application/octet-stream;base64,"
         }
+
+        if(typeof Buffer !== "undefined") {
+            // nodejs
+            gltfBuffer.uri += Buffer.from(bufferArray.buffer).toString('base64');
+            this.loadedBufferCount++;
+
+            if(this.loaded) {
+                this._finalize();
+            }
+        } else {
+            // chrome
+            const blob = new Blob([ bufferArray.buffer ], {type : 'binary'});
+
+            const reader = new FileReader();
+            reader.onload = function() {
+                const dataUrl = reader.result;
+                const base64 = dataUrl.split(',')[1];
+
+                gltfBuffer.uri += base64;
+                this.loadedBufferCount++;
+
+                if(this.loaded) {
+                    this._finalize();
+                }
+            };
+            reader.readAsDataURL(blob);
+        }
+
         return this.asset.buffers.push(gltfBuffer) - 1;
     }
 
@@ -556,8 +581,18 @@ export default class GLTFFile extends TextFile {
         return nodeIndex;
     }
 
-    toString() {
-        return JSON.stringify(this.asset, null, '\t');
+    _finalize() { }
+
+    async toString() {
+        return new Promise((resolve) => {
+            if(this.loaded) {
+                return JSON.stringify(this.asset, null, '\t');
+            } else {
+                this._finalize = () => {
+                    resolve(JSON.stringify(this.asset, null, '\t'));
+                }
+            }
+        })
     }
 }
 
