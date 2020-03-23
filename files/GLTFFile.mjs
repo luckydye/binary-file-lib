@@ -146,7 +146,7 @@ export default class GLTFFile extends TextFile {
         return this.asset.nodes[0];
     }
 
-    async createBuffer(bufferArray) {
+    createBuffer(bufferArray) {
 
         const gltfBuffer = {
             byteLength: bufferArray.buffer.byteLength,
@@ -166,7 +166,7 @@ export default class GLTFFile extends TextFile {
             const blob = new Blob([ bufferArray.buffer ], {type : 'binary'});
 
             const reader = new FileReader();
-            reader.onload = function() {
+            reader.onload = () => {
                 const dataUrl = reader.result;
                 const base64 = dataUrl.split(',')[1];
 
@@ -177,6 +177,7 @@ export default class GLTFFile extends TextFile {
                     this._finalize();
                 }
             };
+
             reader.readAsDataURL(blob);
         }
 
@@ -586,13 +587,19 @@ export default class GLTFFile extends TextFile {
     async toString() {
         return new Promise((resolve) => {
             if(this.loaded) {
-                return JSON.stringify(this.asset, null, '\t');
+                resolve(JSON.stringify(this.asset, null, '\t'));
             } else {
                 this._finalize = () => {
                     resolve(JSON.stringify(this.asset, null, '\t'));
                 }
             }
         })
+    }
+
+    async toBlob() {
+        const stringData = await this.toString();
+        const blob = new Blob([ stringData ], { type: "model/gltf+json" });
+        return blob;
     }
 }
 
