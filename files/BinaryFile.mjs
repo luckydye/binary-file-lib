@@ -29,7 +29,7 @@ export class BinaryFile {
     }
 
     static getValue(struct, key) {
-        return struct.data[key].valueOf();
+        return (struct.data || struct)[key].valueOf();
     }
 
     static parseFile(binaryFile) {
