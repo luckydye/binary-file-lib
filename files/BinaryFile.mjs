@@ -229,6 +229,11 @@ export class BinaryFile {
     static unserializeArray(binary, byteOffset = 0, struct, count = 0) {
         const structs = [];
 
+        // use binary.view if binary is a instance of BinarFile
+        if(binary instanceof this) {
+            binary = binary.view;
+        }
+
         if(binary.byteLength - byteOffset > 0) {
             let bytesPerElement = 0;
 
