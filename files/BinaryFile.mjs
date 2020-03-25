@@ -28,6 +28,10 @@ export class BinaryFile {
         }
     }
 
+    static getValue(struct, key) {
+        return struct.data[key].valueOf();
+    }
+
     static parseFile(binaryFile) {
         // unserialize content
     }
@@ -178,6 +182,11 @@ export class BinaryFile {
     }
 
     static unserialize(binary, byteOffset = 0, struct) {
+
+        // use binary.view if binary is a instance of BinarFile
+        if(binary instanceof this) {
+            binary = binary.view;
+        }
 
         if(binary.byteLength - byteOffset < 1) {
             throw new Error('Buffer too small to unserialize');
