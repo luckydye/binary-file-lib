@@ -2,9 +2,10 @@
 
 ## Example
 
-```
+```javascript
 import { BinaryFile } from 'binary-file-lib';
 
+// file structure defined by data types
 const FileHeader = {
     magic: 'char[4]'
 }
@@ -32,4 +33,34 @@ function main(filename) {
     console.log(file.toString());
 }
 
+```
+
+## Types
+
+Types:
+
+```javascript
+{ key: 'type' }
+```
+
+Type arrays:
+```javascript
+{ key: 'type[n]' }
+```
+
+All types:
+
+```javascript
+{
+    int: 'Int32'
+    long: 'BigInt64'
+    unsigned int: 'Uint32'
+    float: 'Float32'
+    short: 'Int16'
+    unsigned short: 'Uint16'
+    byte: 'Uint8'
+    bool: 'Uint8'
+    char: "ASCI Character"
+    unsigned char: "ASCI Character String terminated by null"
+}
 ```
