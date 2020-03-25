@@ -9,6 +9,52 @@ const textEncoder = new TextEncoder();
 
 export class BinaryFile {
 
+    static async fetch(path) {
+        return fetch(path).then(async res => {
+            if(res.status == 200) {
+                const dataArray = await res.arrayBuffer();
+                return new this(dataArray);
+            } else {
+                throw new Error('Status: ' + res.status);
+            }
+        });
+    }
+
+    constructor(buffer) {
+        if(buffer) {
+            const file = this.constructor.createFile(buffer);
+            this.constructor.parseFile(file);
+            return file;
+        }
+    }
+
+    static parseFile(binaryFile) {
+        // unserialize content
+    }
+
+    static fromDataArray(dataArray) {
+        return new this(dataArray);
+    }
+
+    static createFile(dataArray) {
+
+        if(dataArray instanceof ArrayBuffer) {
+            const file = new this();
+            file.buffer = dataArray;
+            file.view = new DataView(file.buffer);
+            return file;
+        }
+        
+        if(dataArray instanceof DataView || dataArray instanceof Buffer) {
+            const file = new this();
+            file.buffer = dataArray.buffer;
+            file.view = new DataView(file.buffer, dataArray.byteOffset, dataArray.byteLength);
+            return file;
+        }
+
+        throw new Error('Could not create Binary file.');
+    }
+
     static concatBuffer(buffer1, buffer2) {
         const newView = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
 
@@ -281,39 +327,6 @@ export class BinaryFile {
         }
 
         return bin;
-    }
-
-    static createFile(dataArray) {
-
-        if(dataArray instanceof ArrayBuffer) {
-            const file = new this();
-            file.buffer = dataArray;
-            file.view = new DataView(file.buffer);
-            return file;
-        }
-        
-        if(dataArray instanceof DataView || dataArray instanceof Buffer) {
-            const file = new this();
-            file.buffer = dataArray.buffer;
-            file.view = new DataView(file.buffer, dataArray.byteOffset, dataArray.byteLength);
-            return file;
-        }
-
-        throw new Error('Could not create Binary file.');
-    }
-
-    static fromDataArray(dataArray) {
-        return this.createFile(dataArray);
-    }
-
-    static async fetch(path) {
-        return fetch(path).then(async res => {
-            if(res.status == 200) {
-                const dataArray = await res.arrayBuffer();
-                const file = this.fromDataArray(dataArray);
-                return file;
-            }
-        });
     }
 
 }
