@@ -20,12 +20,20 @@ export class BinaryFile {
         });
     }
 
+    static get STRUCT() {
+        return {};
+    }
+
     constructor(buffer) {
         if(buffer) {
             const file = this.constructor.createFile(buffer);
             this.constructor.parseFile(file);
             return file;
         }
+    }
+
+    static getTypeBytelength(type) {
+        return typeMapping[type] ? typeMapping[type].BYTES_PER_ELEMENT : 0;
     }
 
     static getValue(struct, key) {
@@ -406,6 +414,10 @@ const typeMapping = {
         type: 'Float32',
         BYTES_PER_ELEMENT: Float32Array.BYTES_PER_ELEMENT,
     },
+    'double': {
+        type: 'Float64',
+        BYTES_PER_ELEMENT: Float64Array.BYTES_PER_ELEMENT,
+    },
     'short': {
         type: 'Int16',
         BYTES_PER_ELEMENT: Int16Array.BYTES_PER_ELEMENT,
@@ -417,6 +429,10 @@ const typeMapping = {
     'byte': {
         type: 'Uint8',
         BYTES_PER_ELEMENT: Uint8Array.BYTES_PER_ELEMENT,
+    },
+    'signed byte': {
+        type: 'Int8',
+        BYTES_PER_ELEMENT: Int8Array.BYTES_PER_ELEMENT,
     },
     'bool': {
         type: 'Uint8',
