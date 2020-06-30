@@ -32,6 +32,22 @@ export class BinaryFile {
         }
     }
 
+    get size() {
+        return this.buffer.byteLength;
+    }
+
+    get type() {
+        return 'application/octet-stream';
+    }
+
+    get buffer() {
+        return this.view.buffer;
+    }
+
+    async arrayBuffer() {
+        return this.view.buffer;
+    }
+
     static getTypeBytelength(type) {
         return typeMapping[type] ? typeMapping[type].BYTES_PER_ELEMENT : 0;
     }
@@ -45,6 +61,7 @@ export class BinaryFile {
     }
 
     static fromDataArray(dataArray) {
+        console.warn('[Depricated] use of "fromDataArray"');
         return new this(dataArray);
     }
 
@@ -52,15 +69,13 @@ export class BinaryFile {
 
         if(dataArray instanceof ArrayBuffer) {
             const file = new this();
-            file.buffer = dataArray;
-            file.view = new DataView(file.buffer);
+            file.view = new DataView(dataArray);
             return file;
         }
         
         if(dataArray instanceof DataView || dataArray instanceof Buffer) {
             const file = new this();
-            file.buffer = dataArray.buffer;
-            file.view = new DataView(file.buffer, dataArray.byteOffset, dataArray.byteLength);
+            file.view = new DataView(dataArray.buffer, dataArray.byteOffset, dataArray.byteLength);
             return file;
         }
 
