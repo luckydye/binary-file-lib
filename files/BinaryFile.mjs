@@ -108,7 +108,7 @@ export class BinaryFile {
         return bin.getUint32(0, true);
     }
 
-    static parseBytes(binary, byteOffset, type) {
+    static parseBytes(binary, byteOffset, type, littleEndian) {
         let data = null;
 
         if(type == 'char') {
@@ -131,7 +131,7 @@ export class BinaryFile {
 
         } else {
             if(typeMapping[type]) {
-                data = binary['get' + typeMapping[type].type](byteOffset, true);
+                data = binary['get' + typeMapping[type].type](byteOffset, littleEndian);
                 byteOffset += typeMapping[type].BYTES_PER_ELEMENT;
 
             } else if(this.STRUCT[type]) {
@@ -157,7 +157,7 @@ export class BinaryFile {
         };
     }
 
-    static parseType(binary, byteOffset, type, inputs) {
+    static parseType(binary, byteOffset, type, inputs, littleEndian) {
         if(type[type.length-1] == "]") { // is array ?
             let arrayData = [];
 
@@ -200,11 +200,11 @@ export class BinaryFile {
                 throw new Error(`${type} to ${byteOffset + typeMapping[type].BYTES_PER_ELEMENT} offset out of bounds of ${binary.byteLength-1}`);
             }
 
-            return this.parseBytes(binary, byteOffset, type);
+            return this.parseBytes(binary, byteOffset, type, littleEndian);
         }
     }
 
-    static unserialize(binary, byteOffset = 0, struct) {
+    static unserialize(binary, byteOffset = 0, struct, littleEndian = true) {
 
         // use binary.view if binary is a instance of BinarFile
         if(binary instanceof this) {
@@ -230,12 +230,12 @@ export class BinaryFile {
 
             if(typeCount > 1) {
                 for(let i = 0; i < typeCount; i++) {
-                    const parsedType = this.parseType(binary, byteOffset, type, structData);
+                    const parsedType = this.parseType(binary, byteOffset, type, structData, littleEndian);
                     byteOffset = parsedType.byteOffset;
                     structData[key + '_' + i] = parsedType.data;
                 }
             } else {
-                const parsedType = this.parseType(binary, byteOffset, type, structData);
+                const parsedType = this.parseType(binary, byteOffset, type, structData, littleEndian);
                 byteOffset = parsedType.byteOffset;
                 structData[key] = parsedType;
             }
