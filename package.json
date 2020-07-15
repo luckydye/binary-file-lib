@@ -1,9 +1,9 @@
 {
-  "name": "binary-file-lib",
+  "name": "@luckydye/binary-file-lib",
   "version": "1.0.0",
   "description": "Read and write in binary file formats.",
   "main": "index.mjs",
-  "module": "binary-file-lib",
+  "module": "index.mjs",
   "scripts": {
     "test": "echo no test"
   },
@@ -18,5 +18,10 @@
     "url": "https://github.com/luckydye/binary-file-lib/issues"
   },
   "homepage": "https://github.com/luckydye/binary-file-lib#readme",
-  "dependencies": {}
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "dependencies": {
+    "npm": "^6.14.6"
+  }
 }

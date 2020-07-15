@@ -3,7 +3,7 @@
 ## Example
 
 ```javascript
-import { BinaryFile } from 'binary-file-lib';
+import { BinaryFile } from '@luckydye/binary-file-lib';
 
 // file structure defined by data types
 const FileHeader = {
