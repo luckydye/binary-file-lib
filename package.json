@@ -20,8 +20,5 @@
   "homepage": "https://github.com/luckydye/binary-file-lib#readme",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
-  },
-  "dependencies": {
-    "npm": "^6.14.6"
   }
 }
