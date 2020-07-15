@@ -1,6 +1,6 @@
 {
   "name": "@luckydye/binary-file-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Read and write in binary file formats.",
   "main": "index.mjs",
   "module": "index.mjs",
