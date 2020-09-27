@@ -112,14 +112,14 @@ export class BinaryFile {
         let data = null;
 
         if(type == 'char') {
-            const byte = this.parseBytes(binary, byteOffset, 'byte');
+            const byte = this.parseBytes(binary, byteOffset, 'byte', littleEndian);
             byteOffset = byte.byteOffset;
             data = String.fromCharCode(byte.data);
 
         } else if(type == 'unsigned char') {
             data = [];
             for(let i = 0; i < 255; i++) {
-                const byte = this.parseBytes(binary, byteOffset, 'byte');
+                const byte = this.parseBytes(binary, byteOffset, 'byte', littleEndian);
                 byteOffset = byte.byteOffset;
                 if(byte.data == 0x00) {
                     break;
@@ -135,12 +135,12 @@ export class BinaryFile {
                 byteOffset += typeMapping[type].BYTES_PER_ELEMENT;
 
             } else if(this.STRUCT[type]) {
-                const structData = this.unserialize(binary, byteOffset, this.STRUCT[type]);
+                const structData = this.unserialize(binary, byteOffset, this.STRUCT[type], littleEndian);
                 byteOffset = structData.byteOffset;
                 data = structData.data;
 
             } else if(nativeStructs[type]) {
-                const structData = this.unserialize(binary, byteOffset, nativeStructs[type]);
+                const structData = this.unserialize(binary, byteOffset, nativeStructs[type], littleEndian);
                 byteOffset = structData.byteOffset;
                 data = structData.data;
 
@@ -179,7 +179,7 @@ export class BinaryFile {
             }
 
             for(let i = 0; i < arrayLength; i++) {
-                const parsed = this.parseType(binary, byteOffset, arrayDataType, inputs);
+                const parsed = this.parseType(binary, byteOffset, arrayDataType, inputs, littleEndian);
                 byteOffset = parsed.byteOffset;
                 arrayData[i] = parsed.data;
             }
@@ -249,7 +249,7 @@ export class BinaryFile {
         };
     }
 
-    static unserializeArray(binary, byteOffset = 0, struct, count = 0) {
+    static unserializeArray(binary, byteOffset = 0, struct, count = 0, littleEndian = true) {
         const structs = [];
 
         // use binary.view if binary is a instance of BinarFile
@@ -261,7 +261,7 @@ export class BinaryFile {
             let bytesPerElement = 0;
 
             if(count === 0) {
-                const structData = this.unserialize(binary, byteOffset, struct);
+                const structData = this.unserialize(binary, byteOffset, struct, littleEndian);
                 byteOffset = structData.byteOffset;
                 bytesPerElement = structData.byteOffset;
                 structs.push(structData.data);
@@ -271,7 +271,7 @@ export class BinaryFile {
             
             for(let i = 0; i < count; i++) {
                 const byteStartOffset = byteOffset;
-                const structData = this.unserialize(binary, byteOffset, struct);
+                const structData = this.unserialize(binary, byteOffset, struct, littleEndian);
                 byteOffset = structData.byteOffset;
                 structData.data.byteOffset = byteStartOffset;
                 structs.push(structData.data);
